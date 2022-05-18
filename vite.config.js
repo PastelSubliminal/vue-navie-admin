@@ -3,8 +3,10 @@ import vue from '@vitejs/plugin-vue'
 import path from 'path'
 
 import { wrapperEnv, createProxy } from './bulid/utils'
+import { createVitePlugins } from './bulid/plugin'
 
 export default defineConfig(({ command, mode }) => {
+  const isBuild = command === 'build'
   const env = loadEnv(mode, process.cwd())
   const viteEnv = wrapperEnv(env)
   
@@ -12,7 +14,7 @@ export default defineConfig(({ command, mode }) => {
   const { VITE_PORT, VITE_PUBLIC_PATH, VITE_PROXY } = viteEnv
   
   return {
-    plugins: [vue()],
+    plugins: createVitePlugins(viteEnv, isBuild),
     base: VITE_PUBLIC_PATH || '/',
     resolve: {
       alias: {
